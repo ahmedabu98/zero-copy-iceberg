@@ -1,31 +1,23 @@
 pipeline:
   type: chain
   transforms:
-    - type: Create
+    - type: MatchContinuously
+      input: {}
       config:
-        elements: [
-          "gs://ahmedabualsaud/source-dir/**/*.parquet",
-        ]
-    - type: Reshuffle
-    - type: PyTransform
-      config:
-        constructor: __callable__
-        kwargs:
-          source: |
-            def match_files(pcoll):
-              from apache_beam.io.fileio import MatchAll
-              return pcoll | beam.Map(lambda row: row.element) | MatchAll()
+        file_pattern: "gs://ahmedabualsaud/source-dir/**/*.parquet"
+        interval: 10
     - type: MapToFields
       config:
         language: python
         fields:
           path:
-            callable: "lambda row: row.path"
+            callable: "lambda metadata: metadata.path"
             output_type: string
     - type: LogForTesting
     - type: IcebergAddFiles
       config:
-        table: "my_db.dest_batch_table"
+        table: "my_db.dest_streaming_table"
+        triggering_frequency_seconds: 10
         catalog_properties:
           type: "rest"
           uri: "https://biglake.googleapis.com/iceberg/v1/restcatalog"
