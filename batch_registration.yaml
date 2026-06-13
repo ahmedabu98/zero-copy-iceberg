@@ -4,9 +4,7 @@ pipeline:
     - type: Create
       config:
         elements: [
-          "gs://ahmedabualsaud/my-dir/*.parquet",
-          "gs://ahmedabualsaud/my-dir-1/*.parquet",
-          "gs://ahmedabualsaud/my-dir-2/*.parquet",
+          "gs://ahmedabualsaud/source-dir/**/*.parquet",
         ]
     - type: Reshuffle
     - type: PyTransform
