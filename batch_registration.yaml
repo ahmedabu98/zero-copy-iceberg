@@ -1,0 +1,27 @@
+pipeline:
+  type: chain
+  transforms:
+    - type: Create
+      config:
+        elements: [
+          "gs://ahmedabualsaud/my-dir/*.parquet",
+          "gs://ahmedabualsaud/my-dir-1/*.parquet",
+          "gs://ahmedabualsaud/my-dir-2/*.parquet",
+        ]
+    - type: Reshuffle
+    - type: PyTransform
+      config:
+        constructor: __callable__
+        kwargs:
+          source: |
+            def match_files(pcoll):
+              from apache_beam.io.fileio import MatchAll
+              return pcoll | beam.Map(lambda row: row.element) | MatchAll()
+    - type: MapToFields
+      config:
+        language: python
+        fields:
+          path:
+            callable: "lambda row: row.path"
+            output_type: string
+    - type: LogForTesting
