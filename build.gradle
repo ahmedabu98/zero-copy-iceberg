@@ -14,6 +14,7 @@ dependencies {
     implementation "org.apache.beam:beam-sdks-java-io-parquet:${beam_version}"
     implementation "org.apache.beam:beam-sdks-java-io-iceberg:${beam_version}"
     implementation "org.apache.beam:beam-sdks-java-extensions-avro:${beam_version}"
+    implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beam_version}"
     runtimeOnly "org.apache.beam:beam-sdks-java-extensions-google-cloud-platform-core:${beam_version}"
     runtimeOnly "org.apache.beam:beam-runners-direct-java:${beam_version}"
     runtimeOnly "org.apache.hadoop:hadoop-client:3.4.2"

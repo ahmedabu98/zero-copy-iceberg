@@ -20,7 +20,7 @@ public class WriteParquet {
     static final Schema BEAM_SCHEMA =
             Schema.builder().addInt64Field("id").addStringField("name").addInt64Field("age").build();
     static final String LOCAL = "parquet_dir/";
-    static final String GCS = "gs://zero-copy-parquet-dir";
+    static final String GCS = "gs://zero-copy-parquet-dir/";
 
 
     public static void main(String[] args) {
@@ -45,7 +45,6 @@ public class WriteParquet {
                                 .via(ParquetIO.sink(toAvroSchema(BEAM_SCHEMA)))
                                 .to(destination)
                                 .withNaming(age -> defaultNaming(format("age=%s/", age), ".parquet"))
-                                .withTempDirectory("temp/")
                                 .withNumShards(2));
 
         p.run().waitUntilFinish();
