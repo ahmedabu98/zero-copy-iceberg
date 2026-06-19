@@ -6,34 +6,28 @@ import org.apache.beam.sdk.io.iceberg.AddFiles;
 import org.apache.beam.sdk.io.iceberg.IcebergCatalogConfig;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.MapElements;
-import org.apache.beam.sdk.transforms.Watch;
-import org.joda.time.Duration;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
 import static org.apache.beam.sdk.values.TypeDescriptors.strings;
 
-public class AddFilesStreamingMain {
-    static final String PARQUET_PATTERN = "gs://zero-copy-parquet-dir/*.parquet";
-    static final String WAREHOUSE = "gs://zero-copy-warehouse";
+public class AddFilesBatch {
+    static final String PROJECT_DIR = format("file://%s/github/zero-copy-iceberg/", System.getProperty("user.home"));
+    static final String WAREHOUSE = PROJECT_DIR + "warehouse";
     static final Map<String, String> catalogProps = Map.of(
-            "type", "rest",
-            "uri", "https://biglake.googleapis.com/iceberg/v1/restcatalog",
-            "warehouse", WAREHOUSE,
-            "header.x-goog-user-project", "apache-beam-testing",
-            "rest.auth.type", "google",
-            "io-impl", "org.apache.iceberg.gcp.gcs.GCSFileIO",
-            "header.X-Iceberg-Access-Delegation", "vended-credentials");
+            "type", "hadoop",
+            "warehouse", WAREHOUSE
+    );
     static final String destinationTable = "my_namespace.my_table";
     static final List<String> partitionFields = Collections.singletonList("age");
 
     public static void main(String[] args) {
         Pipeline p = Pipeline.create();
-        p
-                .apply(Create.of(PARQUET_PATTERN))
-                .apply(FileIO.matchAll().continuously(Duration.standardSeconds(1), Watch.Growth.never()))
+        p.apply(Create.of(PROJECT_DIR + "parquet_dir/**/*"))
+                .apply(FileIO.matchAll())
                 .apply(MapElements.into(strings()).via(metadata -> metadata.resourceId().toString()))
                 .apply(new AddFiles(
                         IcebergCatalogConfig.builder().setCatalogProperties(catalogProps).build(),

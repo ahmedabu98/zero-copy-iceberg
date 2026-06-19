@@ -16,7 +16,7 @@ import static java.lang.String.format;
 import static org.apache.beam.sdk.extensions.avro.schemas.utils.AvroUtils.toAvroSchema;
 import static org.apache.beam.sdk.io.FileIO.Write.defaultNaming;
 
-public class WriteParquetMain {
+public class WriteParquet {
     static final Schema BEAM_SCHEMA =
             Schema.builder().addInt64Field("id").addStringField("name").addInt64Field("age").build();
     static final String LOCAL = "parquet_dir/";
