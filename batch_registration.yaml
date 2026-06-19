@@ -4,7 +4,7 @@ pipeline:
     - type: Create
       config:
         elements: [
-          "gs://ahmedabualsaud/source-dir/**/*.parquet",
+          "gs://zero-copy-parquet-dir/*.parquet",
         ]
     - type: Reshuffle
     - type: PyTransform
@@ -29,7 +29,7 @@ pipeline:
         catalog_properties:
           type: "rest"
           uri: "https://biglake.googleapis.com/iceberg/v1/restcatalog"
-          warehouse: "gs://ahmedabualsaud"
+          warehouse: "gs://zero-copy-warehouse"
           header.x-goog-user-project: "apache-beam-testing"
           rest.auth.type: "google"
           io-impl: "org.apache.iceberg.gcp.gcs.GCSFileIO"

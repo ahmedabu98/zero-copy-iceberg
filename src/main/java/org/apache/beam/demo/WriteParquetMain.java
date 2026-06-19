@@ -19,8 +19,16 @@ import static org.apache.beam.sdk.io.FileIO.Write.defaultNaming;
 public class WriteParquetMain {
     static final Schema BEAM_SCHEMA =
             Schema.builder().addInt64Field("id").addStringField("name").addInt64Field("age").build();
+    static final String LOCAL = "parquet_dir/";
+    static final String GCS = "gs://zero-copy-parquet-dir";
+
 
     public static void main(String[] args) {
+        write(LOCAL);
+//        write(GCS);
+    }
+
+    public static void write(String destination) {
         Pipeline p = Pipeline.create();
 
         p.apply(GenerateSequence.from(0).to(500))
@@ -35,7 +43,7 @@ public class WriteParquetMain {
                                 .by(record -> (long) record.get("age"))
                                 .withDestinationCoder(VarLongCoder.of())
                                 .via(ParquetIO.sink(toAvroSchema(BEAM_SCHEMA)))
-                                .to("parquet_dir/")
+                                .to(destination)
                                 .withNaming(age -> defaultNaming(format("age=%s/", age), ".parquet"))
                                 .withTempDirectory("temp/")
                                 .withNumShards(2));
