@@ -21,7 +21,7 @@ import static org.apache.beam.sdk.values.TypeDescriptors.strings;
 
 public class AddFilesStreaming {
     static final String PROJECT = "apache-beam-testing";
-    static final String PARQUET_PATTERN = "gs://zero-copy-parquet-dir/*.parquet";
+    static final String PARQUET_PATTERN = "gs://zero-copy-parquet-dir/**/*.parquet";
     static final String WAREHOUSE = "gs://zero-copy-warehouse";
     static final Map<String, String> catalogProps = Map.of(
             "type", "rest",
@@ -40,7 +40,7 @@ public class AddFilesStreaming {
         options.setProject(PROJECT);
         options.setRegion("us-central1");
         options.setStreaming(true);
-        options.setJobName("add-files-streaming");
+        options.setJobName("addfiles-streaming");
 
         Pipeline p = Pipeline.create(options);
         p
@@ -55,7 +55,7 @@ public class AddFilesStreaming {
                         null,
                         null,
                         null,
-                        null));
+                        Duration.standardSeconds(2)));
         DataflowPipelineJob job = (DataflowPipelineJob) p.run();
         System.out.println(job.getJobId());
     }
