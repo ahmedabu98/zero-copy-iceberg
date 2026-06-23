@@ -6,11 +6,7 @@ PROPERTIES(
     'warehouse' = '/Users/ahmedabualsaud/github/zero-copy-iceberg/warehouse'
 );
 
-SHOW DATABASES IN local_catalog;
-SHOW TABLES IN local_catalog.my_namespace;
-
 SELECT * FROM local_catalog.my_namespace.my_table;
-
 
 
 -- LAKEHOUSE GCS
@@ -25,8 +21,4 @@ PROPERTIES (
     'header.X-Iceberg-Access-Delegation' = 'vended-credentials'
 );
 
-USE CATALOG lakehouse;
-SHOW DATABASES IN lakehouse;
-SHOW TABLES IN lakehouse.my_namespace;
-
-SELECT * FROM lakehouse.my_namespace.my_table;
+SELECT COUNT(*) FROM lakehouse.my_namespace.my_table;

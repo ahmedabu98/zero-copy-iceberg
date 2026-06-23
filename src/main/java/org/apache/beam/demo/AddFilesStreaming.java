@@ -13,6 +13,7 @@ import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.Watch;
 import org.joda.time.Duration;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class AddFilesStreaming {
         options.setRegion("us-central1");
         options.setStreaming(true);
         options.setJobName("addfiles-streaming");
+        options.setExperiments(Arrays.asList("enable_streaming_engine"));
 
         Pipeline p = Pipeline.create(options);
         p
@@ -55,8 +57,9 @@ public class AddFilesStreaming {
                         null,
                         null,
                         null,
-                        Duration.standardSeconds(2)));
+                        Duration.standardSeconds(1)));
         DataflowPipelineJob job = (DataflowPipelineJob) p.run();
+
         System.out.println(job.getJobId());
     }
 }

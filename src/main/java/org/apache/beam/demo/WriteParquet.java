@@ -12,6 +12,8 @@ import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.Row;
 import org.apache.beam.sdk.values.TypeDescriptors;
 
+import java.util.UUID;
+
 import static java.lang.String.format;
 import static org.apache.beam.sdk.extensions.avro.schemas.utils.AvroUtils.toAvroSchema;
 import static org.apache.beam.sdk.io.FileIO.Write.defaultNaming;
@@ -24,14 +26,15 @@ public class WriteParquet {
 
 
     public static void main(String[] args) {
-        write(LOCAL);
-//        write(GCS);
+        write(LOCAL, 10);
+//        write(GCS, 1000);
     }
 
-    public static void write(String destination) {
+    public static void write(String destination, long to) {
         Pipeline p = Pipeline.create();
+        String prefix = UUID.randomUUID().toString();
 
-        p.apply(GenerateSequence.from(0).to(500))
+        p.apply(GenerateSequence.from(0).to(to))
                 .apply(MapElements.into(TypeDescriptors.rows())
                         .via(l -> Row.withSchema(BEAM_SCHEMA)
                                 .addValues(l, "name_" + l, (l % 10) + 30)
@@ -44,7 +47,7 @@ public class WriteParquet {
                                 .withDestinationCoder(VarLongCoder.of())
                                 .via(ParquetIO.sink(toAvroSchema(BEAM_SCHEMA)))
                                 .to(destination)
-                                .withNaming(age -> defaultNaming(format("age=%s/", age), ".parquet"))
+                                .withNaming(age -> defaultNaming(format("age=%s/%s", age, prefix), ".parquet"))
                                 .withNumShards(2));
 
         p.run().waitUntilFinish();

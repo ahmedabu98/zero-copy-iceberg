@@ -4,7 +4,7 @@ pipeline:
     - type: Create
       config:
         elements: [
-          "gs://zero-copy-parquet-dir/*.parquet",
+          "gs://zero-copy-parquet-dir/**/*.parquet",
         ]
     - type: Reshuffle
     - type: PyTransform
