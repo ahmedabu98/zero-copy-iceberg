@@ -16,7 +16,7 @@ import static org.apache.beam.sdk.values.TypeDescriptors.strings;
 
 public class AddFilesBatch {
     static final String PROJECT_DIR = format("file://%s/github/zero-copy-iceberg/", System.getProperty("user.home"));
-    static final String WAREHOUSE = PROJECT_DIR + "warehouse";
+    static final String WAREHOUSE = PROJECT_DIR + "iceberg_table";
     static final Map<String, String> catalogProps = Map.of(
             "type", "hadoop",
             "warehouse", WAREHOUSE
