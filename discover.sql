@@ -3,7 +3,7 @@ CREATE CATALOG local_catalog
 TYPE 'iceberg'
 PROPERTIES(
     'type' = 'hadoop',
-    'warehouse' = '/Users/ahmedabualsaud/github/zero-copy-iceberg/warehouse'
+    'warehouse' = '/Users/ahmedabualsaud/github/zero-copy-iceberg/iceberg_table'
 );
 
 SELECT * FROM local_catalog.my_namespace.my_table;
